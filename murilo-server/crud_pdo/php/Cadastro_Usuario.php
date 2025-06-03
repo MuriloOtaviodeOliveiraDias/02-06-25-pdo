@@ -1,0 +1,29 @@
+<?php
+ require_once "Conexao.php";
+  $email = $_POST['emailFormulario'];
+  $nome = $_POST['nomeFormulario'];
+  $senha = $_POST['senhaFormulario'];
+
+  if(!empty($email) && !empty($senha) && !empty($nome)){
+    $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+
+    $sql = "INSERT INTO usuaruio(email, nome, senha) VALUES (:email, :nome, :senha)";
+
+
+    //preparar a inserção de dados no banco
+    $requisicao = $conexao->prepare($sql);
+    $requisicao->bindParam(':email', $email);
+     $requisicao->bindParam(':nome', $nome);
+      $requisicao->bindParam(':senha', $senhaHash);
+
+      try{
+        $requisicao->execute();
+        echo "Usuário cadastrado com Sucesso!";
+      }catch(PDOException $e){
+        echo"Erro a cadastrar: ". $e->getMessage();
+      }
+}else{
+    echo '<p style="color:red;">Preencha todos os valores dos campos!</p>';
+}
+
+?>
